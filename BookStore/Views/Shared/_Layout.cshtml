@@ -14,7 +14,12 @@
             <div class="container-fluid">
                 @if (User.IsInRole("Seller"))
                 {
-                    <a class="navbar-brand" asp-area="" asp-controller="Books" asp-action="Index">BookStore</a>}
+                    <a class="navbar-brand" asp-area="" asp-controller="Books" asp-action="Index">BookStore</a>
+                }
+                else if (User.IsInRole("Admin"))
+                {
+                     <a class="navbar-brand" asp-area="" asp-controller="Admin" asp-action="Index">BookStore</a>
+                }
                 else
                 {
                     <a class="navbar-brand" asp-area="" asp-controller="Books" asp-action="List">BookStore</a>
@@ -37,10 +42,11 @@
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Stores" asp-action="Index">Store</a>
                             </li>
                             <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Category" asp-action="Index">Category</a>
+                            </li>
+                            <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Orders" asp-action="Manager">Order Manager</a>
                             </li>
-
-
                         } else @if (User.IsInRole("Admin")) {
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Admin" asp-action="Index">Manage Customer </a>
@@ -50,7 +56,7 @@
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Admin" asp-action="StoreOwner">Manage Store</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Admin" asp-action="Manager">Category</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Admin" asp-action="Category">Category</a>
                             </li>
                         }
                         else

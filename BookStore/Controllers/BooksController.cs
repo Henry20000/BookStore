@@ -120,12 +120,11 @@ namespace BookStore.Controllers
             AppUser ThisUser = await _userManager.GetUserAsync(HttpContext.User);
             Store ThisStore = await _context.Store.FirstOrDefaultAsync(s => s.UId == ThisUser.Id);
 
-            var books = _context.Book.Where(b => b.StoreId == ThisStore.Id).Include(b => b.Store);
+            var books = _context.Book.Where(b => b.StoreId == ThisStore.Id).Include(b => b.Store).Include(b => b.Category);
             var BookContext = from b in books select b;
             if(searchString !=null)
              {
-                BookContext = BookContext.Where(b => b.Title.Contains(searchString)
-                                       || b.Category.Contains(searchString));
+                BookContext = BookContext.Where(b => b.Title.Contains(searchString));
             }
             int numberOfRecords = await books.CountAsync();     //Count SQL
             int numberOfPages = (int)Math.Ceiling((double)numberOfRecords / _recordsPerPage);
@@ -181,6 +180,7 @@ namespace BookStore.Controllers
         public IActionResult Create()
         {
             ViewData["StoreId"] = new SelectList(_context.Store, "Id", "Id");
+            ViewData["Categories"] = _context.Category.Where(c => c.IsApprove == true).ToList<Category>();
             return View();
         }
 
@@ -190,7 +190,7 @@ namespace BookStore.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Seller")]
-        public async Task<IActionResult> Create([Bind("Isbn,Title,Pages,Author,Category,Price,Desc,StoreId")] Book book, IFormFile image)
+        public async Task<IActionResult> Create([Bind("Isbn,Title,Pages,Author,CategoryId,Price,Desc,StoreId")] Book book, IFormFile image)
         {
 
             if (image != null)

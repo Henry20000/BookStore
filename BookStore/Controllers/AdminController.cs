@@ -1,9 +1,11 @@
 ﻿using BookStore.Areas.Identity.Data;
 using BookStore.Data;
+using BookStore.Models;
 using BookStore.ViewModel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace BookStore.Controllers
 {
@@ -28,6 +30,15 @@ namespace BookStore.Controllers
             ViewData["Customers"] = customers;
             return View();
         }
+        
+        // GET: Categories
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Category()
+        {
+
+            var userContext = _context.Category.Include(s => s.User).Where(c => c.IsApprove == false);
+            return View(await userContext.ToListAsync());
+        }
 
         [Authorize(Roles = "Admin")]
         public IActionResult StoreOwner()
@@ -47,6 +58,20 @@ namespace BookStore.Controllers
             var token = await _userManager.GeneratePasswordResetTokenAsync(user);
             var result = await _userManager.ResetPasswordAsync(user, token, changePassword.Password);
             return View("Index");
+        }
+
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Approve(int Id)
+        {
+            Category category = await _context.Category.FindAsync(Id);
+            if (category == null)
+            {
+                ViewData["Error"] = "Not found category id: " + Id;
+                return RedirectToAction("Category");
+            }
+            category.IsApprove = true;
+            await _context.SaveChangesAsync();
+            return RedirectToAction("Category");
         }
     }
 }

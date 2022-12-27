@@ -13,6 +13,8 @@ public class BookStoreContext : IdentityDbContext<AppUser>
     {
     }
     public DbSet<Store> Store { get; set; }
+
+    public DbSet<Category> Category { get; set; }
     public DbSet<Book> Book { get; set; }
     public DbSet<Order> Order { get; set; }
     public DbSet<OrderDetail> OrderDetail { get; set; }
@@ -30,6 +32,10 @@ public class BookStoreContext : IdentityDbContext<AppUser>
             .HasOne<Store>(b => b.Store)
             .WithMany(st => st.Books)
             .HasForeignKey(b => b.StoreId);
+        builder.Entity<Book>()
+           .HasOne<Category>(b => b.Category)
+           .WithMany(st => st.Books)
+           .HasForeignKey(b => b.CategoryId);
 
         builder.Entity<Order>()
             .HasOne<AppUser>(o => o.User)
