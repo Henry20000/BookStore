@@ -1,0 +1,95 @@
+﻿@using BookStore.Areas.Identity.Data
+@using BookStore.ViewModel
+@model ChangePassword;
+
+@{
+    ViewData["Title"] = "Admin";
+}
+
+@{
+     List<AppUser> customers = ViewData["Customers"] as List<AppUser>;
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <h4>List Customer</h4>
+            <div class="table-responsive">
+                <table id="mytable" class="table table-bordred table-striped">
+                    <thead>
+                        <th>Full Name</th>
+                        <th>Address</th>
+                        <th>Email</th>
+                        <th>Phone Number</th>
+                        <th>Edit</th>
+                        @*<th>Delete</th>*@
+                    </thead>
+                    <tbody>
+                        @foreach (var item in customers!)
+                        {
+                            <tr>
+                                <td>@item.UserName</td>
+                                <td>@item.Address</td>
+                                <td>@item.Email</td>
+                                <td>@item.PhoneNumber</td>
+                                <td>
+                                    <button  type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="@item.Id">Edit</button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+                <div class="clearfix"></div>
+                <ul class="pagination pull-right">
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Change Password</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="form-reset" asp-method="post" asp-action="ResetPassword">
+            <input asp-for="Id" type="text" class="form-control" id="customer-id" value="" hidden>
+          <div class="mb-3">
+            <label asp-for="Password" class="col-form-label">New Password</label>
+            <input asp-for="Password" type="password" class="form-control" id="recipient-name">
+          </div>
+          <div class="mb-3">
+            <label asp-for="ConfirmPassword" class="col-form-label">Confirm Password</label>
+            <input asp-for="ConfirmPassword" type="password" class="form-control" id="recipient-name">
+            <span class="text-danger">@Html.ValidationMessageFor(model => model.ConfirmPassword)</span>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary">Change</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+    var exampleModal = document.getElementById('exampleModal')
+    exampleModal.addEventListener('show.bs.modal', function (event) {
+      // Button that triggered the modal
+      var button = event.relatedTarget
+      // Extract info from data-bs-* attributes
+      var recipient = button.getAttribute('data-bs-whatever')
+      // If necessary, you could initiate an AJAX request here
+      // and then do the updating in a callback.
+      // Change action by Id
+      var id = document.getElementById("customer-id") || null;
+      console.log("Element: ", id)
+      if (id) {
+          id.setAttribute("value", recipient)
+      }
+    })
+</script>

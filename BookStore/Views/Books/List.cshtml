@@ -1,0 +1,67 @@
+﻿@model List<BookStore.Models.Book>
+
+@{
+
+    var n = Model.Count; //number of elements
+    var a = 3; // number off elements per row
+    var nRow = (int)Math.Ceiling((double)n / a);
+}
+
+<h1>List Book</h1>
+
+<form asp-action="List" method="get">
+    <div class="form-actions no-color">
+        <p>
+            Find by name: <input type="text" name="SearchString" value=@ViewBag.CurrentFilter />
+            <input type="submit" value="Search" class="btn btn-default" />
+
+            <a asp-action="List">Back to Full List</a>
+        </p>
+    </div>
+</form>
+<div class="container">
+    <div class="row">
+        @foreach (var item in Model)
+        {
+            <div class="col-md-4 col-6">
+                <div class="card" style="width: 18rem;">
+                    <img src=@(@item.ImgUrl) class="card-img-top" alt="...">
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">@item.Title</h5>
+                    <p2 class="card-Author">@item.Author</p2>
+                    <p1 class="card-price">@item.Price</p1>
+                    <div class="card-body">
+                        <a href=@("../Books/DetailsCustomer/"+@item.Isbn) class="btn btn-primary">Detail</a>
+                        <a asp-action="AddToCart" asp-route-isbn="@item.Isbn" class="btn btn-primary " onclick="alert('The book has been added to the cart ')">Add to cart</a>
+                    </div>
+
+                </div>
+            </div>
+        }
+    </div>
+    <div class="form-actions no-color">
+        <p>
+            QuantityBook:@ViewBag.numberOfFilteredBook 
+
+        </p>
+    </div>
+</div>
+<div style="display:flex;text-align:center;justify-content:center">
+    <nav aria-label="Page navigation example">
+        <ul class="pagination">
+            @for (var i = 0; i < @ViewBag.numberOfPages; i++)
+            {
+
+                var style = (ViewBag.currentPage == @a) ? "active" : "";
+                <li class="page-item @style">
+                    <a class="page-link" asp-route-id="@i">@(i+1)</a>
+                </li>
+            }
+        </ul>
+    </nav>
+</div>
+</div>
+
+
+
