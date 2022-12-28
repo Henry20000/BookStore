@@ -115,26 +115,27 @@ namespace BookStore.Controllers
 
         // GET: Books
         [Authorize(Roles = "Seller")]
-        public async Task<IActionResult> Index(string searchString, int id = 0)
+        public async Task<IActionResult> /*List(int id = 0)*/Index(string searchString, int id = 0)
         {
             AppUser ThisUser = await _userManager.GetUserAsync(HttpContext.User);
             Store ThisStore = await _context.Store.FirstOrDefaultAsync(s => s.UId == ThisUser.Id);
 
             var books = _context.Book.Where(b => b.StoreId == ThisStore.Id).Include(b => b.Store).Include(b => b.Category);
             var BookContext = from b in books select b;
-            if(searchString !=null)
-             {
+            if (searchString != null)
+            {
                 BookContext = BookContext.Where(b => b.Title.Contains(searchString));
             }
             int numberOfRecords = await books.CountAsync();     //Count SQL
             int numberOfPages = (int)Math.Ceiling((double)numberOfRecords / _recordsPerPage);
             ViewBag.numberOfPages = numberOfPages;
             ViewBag.currentPage = id;
-            ViewData["CurrentFilter"] = searchString;
+            ViewData ["CurrentFilter"] = searchString;
             List<Book> Books = await BookContext
                 .Skip(id * _recordsPerPage)  //Offset SQL
                 .Take(_recordsPerPage)       //Top SQL
                 .ToListAsync();
+           
             return View(Books);
 
         }

@@ -30,8 +30,18 @@
                 @Html.DisplayFor(modelItem => item.User.UserName)
             </td>
             <td>
-                <a asp-action="Approve" asp-route-id="@item.Id">Approve</a>
+                    @if (@item.IsApprove)
+                    {
+                        <a asp-action="ImApprove" asp-route-id="@item.Id">ImApprove</a>
+                    }
+                    else
+                    {
+                        <a asp-action="Approve" asp-route-id="@item.Id">Approve</a>
+                    }
+                
             </td>
+          
+
         </tr>
 }
     </tbody>

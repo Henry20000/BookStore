@@ -36,7 +36,7 @@ namespace BookStore.Controllers
         public async Task<IActionResult> Category()
         {
 
-            var userContext = _context.Category.Include(s => s.User).Where(c => c.IsApprove == false);
+            var userContext = _context.Category.Include(s => s.User)/*Where(c => c.IsApprove == false)*/;
             return View(await userContext.ToListAsync());
         }
 
@@ -70,6 +70,19 @@ namespace BookStore.Controllers
                 return RedirectToAction("Category");
             }
             category.IsApprove = true;
+            await _context.SaveChangesAsync();
+            return RedirectToAction("Category");
+        }
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> ImApprove(int Id)
+        {
+            Category category = await _context.Category.FindAsync(Id);
+            if (category == null)
+            {
+                ViewData["Error"] = "Not found category id: " + Id;
+                return RedirectToAction("Category");
+            }
+            category.IsApprove = false;
             await _context.SaveChangesAsync();
             return RedirectToAction("Category");
         }
