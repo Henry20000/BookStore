@@ -36,7 +36,7 @@ namespace BookStore.Controllers
         public async Task<IActionResult> Category()
         {
 
-            var userContext = _context.Category.Include(s => s.User)/*Where(c => c.IsApprove == false)*/;
+            var userContext = _context.Category.Include(s => s.User);
             return View(await userContext.ToListAsync());
         }
 
@@ -54,10 +54,11 @@ namespace BookStore.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> ResetPassword(ChangePassword changePassword)
         {
+            Console.WriteLine("Id cus: " + changePassword.Id);
             var user = await _userManager.FindByIdAsync(changePassword.Id);
             var token = await _userManager.GeneratePasswordResetTokenAsync(user);
             var result = await _userManager.ResetPasswordAsync(user, token, changePassword.Password);
-            return View("Index");
+            return RedirectToAction("Index", "Admin");
         }
 
         [Authorize(Roles = "Admin")]

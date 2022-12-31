@@ -242,6 +242,7 @@ namespace BookStore.Controllers
                 return NotFound();
             }
             ViewData["StoreId"] = new SelectList(_context.Store, "Id", "Id", book.StoreId);
+            ViewData["Categories"] = _context.Category.Where(c => c.IsApprove == true).ToList<Category>();
             return View(book);
         }
 
@@ -251,7 +252,7 @@ namespace BookStore.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Seller")]
-        public async Task<IActionResult> Edit(IFormFile image, string id, [Bind("Isbn,Title,Pages,Author,Category,Price,Desc,ImgUrl,StoreId")] Book book)
+        public async Task<IActionResult> Edit(IFormFile image, string id, [Bind("Isbn,Title,Pages,Author,CategoryId,Price,Desc,ImgUrl,StoreId")] Book book)
         {
             if (id != book.Isbn)
             {
@@ -266,7 +267,7 @@ namespace BookStore.Controllers
             book.Title = book.Title;
             book.Pages = book.Pages;
             bookUpdate.Author = book.Author;
-            bookUpdate.Category = book.Category;
+            bookUpdate.CategoryId = book.CategoryId;
             bookUpdate.Price = book.Price;
             bookUpdate.Desc = book.Desc;
             bookUpdate.ImgUrl = book.ImgUrl;
